@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Script Launcher</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>SCRIPT LAUNCHER</h1>
+            <div id="folder-row">
+                <span id="folder-path">No folder selected</span>
+            </div>
+        </header>
+
+        <div id="toolbar">
+            <input id="search" type="text" placeholder="Filter scripts..." />
+            <button id="choose-folder-btn" title="Choose folder">📁</button>
+            <button id="refresh-btn" title="Refresh">⟳</button>
+        </div>
+
+        <div id="script-list"></div>
+
+        <footer>
+            <span id="status">Ready</span>
+        </footer>
+    </div>
+
+    <script src="./lib/CSInterface.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>
