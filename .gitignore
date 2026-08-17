@@ -1,0 +1,6 @@
+.DS_Store
+*.zxp
+*.p12
+node_modules/
+.vscode/
+Thumbs.db
