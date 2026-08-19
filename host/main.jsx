@@ -13,6 +13,16 @@ function chooseFolder() {
     return "null";
 }
 
+// ExtendScript's File/Folder .name can come back URI-encoded (e.g. spaces as
+// %20) depending on OS/locale, so decode defensively everywhere it's displayed.
+function decodeName(str) {
+    try {
+        return decodeURI(str);
+    } catch (e) {
+        return str;
+    }
+}
+
 // Manual JSON escaping - avoids depending on ExtendScript's built-in JSON object,
 // which is inconsistent across Illustrator versions.
 function jsonEscape(str) {
@@ -38,7 +48,8 @@ function listScripts(folderPaths) {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 if (file instanceof Folder) {
-                    collectScripts(file, relativePath ? relativePath + "/" + file.name : file.name);
+                    var folderName = decodeName(file.name);
+                    collectScripts(file, relativePath ? relativePath + "/" + folderName : folderName);
                 } else if (file instanceof File && /\.(jsx|jsxbin)$/i.test(file.name)) {
                     matched.push({ file: file, folder: relativePath });
                 }
@@ -61,12 +72,7 @@ function listScripts(folderPaths) {
 
         var parts = [];
         for (var j = 0; j < matched.length; j++) {
-            var displayName;
-            try {
-                displayName = decodeURI(matched[j].file.name);
-            } catch (decodeErr) {
-                displayName = matched[j].file.name;
-            }
+            var displayName = decodeName(matched[j].file.name);
             parts.push(
                 '{"name":"' + jsonEscape(displayName) + '","path":"' + jsonEscape(matched[j].file.fsName) + '","folder":"' + jsonEscape(matched[j].folder) + '"}'
             );
