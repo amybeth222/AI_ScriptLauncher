@@ -17,8 +17,30 @@
         <div id="toolbar">
             <input id="search" type="text" placeholder="Filter scripts..." />
             <button id="choose-folder-btn" title="Choose folder">📁</button>
+            <button id="settings-btn" title="Settings" aria-expanded="false">⚙</button>
             <button id="refresh-btn" title="Refresh">⟳</button>
         </div>
+
+        <section id="settings-panel" aria-label="Display and folder settings" hidden>
+            <label>
+                Text size
+                <input id="text-size" type="number" min="8" max="24" step="1" />
+                <span>px</span>
+            </label>
+            <label>
+                Text color
+                <input id="text-color" type="color" />
+            </label>
+            <label>
+                Button color
+                <input id="button-color" type="color" />
+            </label>
+            <label>
+                Row spacing
+                <input id="row-spacing" type="number" min="0" max="24" step="1" />
+                <span>px</span>
+            </label>
+        </section>
 
         <div id="script-list"></div>
 

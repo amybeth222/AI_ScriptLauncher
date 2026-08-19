@@ -24,38 +24,51 @@ function jsonEscape(str) {
         .replace(/\r/g, "\\r");
 }
 
-// Returns a JSON string: [{ "name": "MyScript.jsx", "path": "/full/path/MyScript.jsx" }, ...]
+// Returns a JSON string: [{ "name": "MyScript.jsx", "path": "/full/path/MyScript.jsx", "folder": "subfolder" }, ...]
 // On failure, returns a JSON object: { "error": "..." }
-function listScripts(folderPath) {
+function listScripts(folderPaths) {
     try {
-        var folder = new Folder(folderPath);
-        if (!folder.exists) {
-            return '{"error":"Folder does not exist: ' + jsonEscape(folderPath) + '"}';
+        if (!(folderPaths instanceof Array)) {
+            folderPaths = [folderPaths];
         }
 
-        var files = folder.getFiles();
         var matched = [];
-        for (var i = 0; i < files.length; i++) {
-            var f = files[i];
-            if (f instanceof File && /\.(jsx|jsxbin)$/i.test(f.name)) {
-                matched.push(f);
+        function collectScripts(folder, relativePath) {
+            var files = folder.getFiles();
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (file instanceof Folder) {
+                    collectScripts(file, relativePath ? relativePath + "/" + file.name : file.name);
+                } else if (file instanceof File && /\.(jsx|jsxbin)$/i.test(file.name)) {
+                    matched.push({ file: file, folder: relativePath });
+                }
             }
         }
 
+        for (var i = 0; i < folderPaths.length; i++) {
+            var folder = new Folder(folderPaths[i]);
+            if (!folder.exists) {
+                return '{"error":"Folder does not exist: ' + jsonEscape(folderPaths[i]) + '"}';
+            }
+            collectScripts(folder, "");
+        }
+
         matched.sort(function (a, b) {
-            return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+            var aName = (a.folder + "/" + a.file.name).toLowerCase();
+            var bName = (b.folder + "/" + b.file.name).toLowerCase();
+            return aName < bName ? -1 : aName > bName ? 1 : 0;
         });
 
         var parts = [];
         for (var j = 0; j < matched.length; j++) {
             var displayName;
             try {
-                displayName = decodeURI(matched[j].name);
+                displayName = decodeURI(matched[j].file.name);
             } catch (decodeErr) {
-                displayName = matched[j].name;
+                displayName = matched[j].file.name;
             }
             parts.push(
-                '{"name":"' + jsonEscape(displayName) + '","path":"' + jsonEscape(matched[j].fsName) + '"}'
+                '{"name":"' + jsonEscape(displayName) + '","path":"' + jsonEscape(matched[j].file.fsName) + '","folder":"' + jsonEscape(matched[j].folder) + '"}'
             );
         }
         return "[" + parts.join(",") + "]";
