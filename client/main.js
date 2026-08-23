@@ -1,4 +1,6 @@
 (function () {
+    var APP_VERSION = "1.1.0";
+
     var csInterface = new CSInterface();
     var STORAGE_KEY = "scriptLauncher.folder";
     var SETTINGS_KEY = "scriptLauncher.settings";
@@ -8,21 +10,28 @@
     var scriptListEl = document.getElementById("script-list");
     var searchEl = document.getElementById("search");
     var statusEl = document.getElementById("status");
-    var chooseFolderBtn = document.getElementById("choose-folder-btn");
+    var aboutBtn = document.getElementById("about-btn");
+    var aboutPanelEl = document.getElementById("about-panel");
+    var aboutBackdropEl = document.getElementById("about-backdrop");
+    var aboutCloseBtn = document.getElementById("about-close-btn");
+    var aboutLinkEl = document.getElementById("about-link");
+    var aboutVersionEl = document.getElementById("about-version");
     var refreshBtn = document.getElementById("refresh-btn");
     var settingsBtn = document.getElementById("settings-btn");
     var settingsPanelEl = document.getElementById("settings-panel");
     var textSizeEl = document.getElementById("text-size");
     var textColorEl = document.getElementById("text-color");
-    var buttonColorEl = document.getElementById("button-color");
+    var uiColorEl = document.getElementById("ui-color");
     var rowSpacingEl = document.getElementById("row-spacing");
+    var addFolderBtn = document.getElementById("add-folder-btn");
+    var folderSourceListEl = document.getElementById("folder-source-list");
 
     var currentFolders = [];
     var allScripts = [];
     var settings = {
         textSize: 11,
         textColor: "#e0e0e0",
-        buttonColor: "#caff00",
+        uiColor: "#caff00",
         rowSpacing: 6
     };
 
@@ -381,22 +390,68 @@
         });
     }
 
+    function renderFolderSources() {
+        folderSourceListEl.innerHTML = "";
+        currentFolders.forEach(function (path) {
+            var row = document.createElement("div");
+            row.className = "folder-source-row";
+
+            var label = document.createElement("span");
+            label.className = "folder-source-path";
+            label.textContent = path;
+            label.title = path;
+
+            var removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "folder-source-remove";
+            removeBtn.title = "Remove folder";
+            removeBtn.textContent = "×";
+            removeBtn.addEventListener("click", function () {
+                removeFolder(path);
+            });
+
+            row.appendChild(label);
+            row.appendChild(removeBtn);
+            folderSourceListEl.appendChild(row);
+        });
+    }
+
     function setFolders(paths) {
         currentFolders = paths;
-        folderPathEl.textContent = paths.length === 1 ? paths[0] : paths.length + " folders selected";
+        folderPathEl.textContent = paths.length === 0 ? "No folder selected" : paths.length === 1 ? paths[0] : paths.length + " folders selected";
         folderPathEl.title = paths.join("\n");
         localStorage.setItem(STORAGE_KEY, JSON.stringify(paths));
+        renderFolderSources();
         scanFolder(paths);
+    }
+
+    function addFolder() {
+        csInterface.evalScript("chooseFolder()", function (result) {
+            if (!result || result === "null") {
+                return;
+            }
+            if (currentFolders.indexOf(result) !== -1) {
+                setStatus("That folder is already added.", "error");
+                return;
+            }
+            setFolders(currentFolders.concat([result]));
+        });
+    }
+
+    function removeFolder(path) {
+        setFolders(currentFolders.filter(function (existing) {
+            return existing !== path;
+        }));
     }
 
     function applySettings() {
         document.documentElement.style.setProperty("--script-font-size", settings.textSize + "px");
         document.documentElement.style.setProperty("--script-text-color", settings.textColor);
-        document.documentElement.style.setProperty("--button-color", settings.buttonColor);
+        document.documentElement.style.setProperty("--ui-color", settings.uiColor);
         document.documentElement.style.setProperty("--row-spacing", settings.rowSpacing + "px");
         textSizeEl.value = settings.textSize;
         textColorEl.value = settings.textColor;
-        buttonColorEl.value = settings.buttonColor;
+        uiColorEl.value = settings.uiColor;
         rowSpacingEl.value = settings.rowSpacing;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     }
@@ -404,7 +459,7 @@
     function updateSetting() {
         settings.textSize = Number(textSizeEl.value) || 11;
         settings.textColor = textColorEl.value;
-        settings.buttonColor = buttonColorEl.value;
+        settings.uiColor = uiColorEl.value;
         settings.rowSpacing = Number(rowSpacingEl.value) || 6;
         applySettings();
     }
@@ -421,14 +476,7 @@
         });
     }
 
-    chooseFolderBtn.addEventListener("click", function () {
-        csInterface.evalScript("chooseFolder()", function (result) {
-            if (!result || result === "null") {
-                return;
-            }
-            setFolders([result]);
-        });
-    });
+    addFolderBtn.addEventListener("click", addFolder);
 
     refreshBtn.addEventListener("click", function () {
         if (currentFolders.length) {
@@ -436,22 +484,55 @@
         }
     });
 
+    function closeAbout() {
+        aboutPanelEl.hidden = true;
+        aboutBackdropEl.hidden = true;
+        aboutBtn.setAttribute("aria-expanded", "false");
+    }
+
+    function openAbout() {
+        settingsPanelEl.hidden = true;
+        settingsBtn.setAttribute("aria-expanded", "false");
+        aboutPanelEl.hidden = false;
+        aboutBackdropEl.hidden = false;
+        aboutBtn.setAttribute("aria-expanded", "true");
+    }
+
     searchEl.addEventListener("input", applyFilter);
     settingsBtn.addEventListener("click", function () {
         var isHidden = settingsPanelEl.hidden;
+        closeAbout();
         settingsPanelEl.hidden = !isHidden;
         settingsBtn.setAttribute("aria-expanded", isHidden ? "true" : "false");
     });
+    aboutBtn.addEventListener("click", function () {
+        if (aboutPanelEl.hidden) {
+            openAbout();
+        } else {
+            closeAbout();
+        }
+    });
+    aboutCloseBtn.addEventListener("click", closeAbout);
+    aboutBackdropEl.addEventListener("click", closeAbout);
+    aboutLinkEl.addEventListener("click", function (event) {
+        event.preventDefault();
+        csInterface.openURLInDefaultBrowser(aboutLinkEl.href);
+    });
     textSizeEl.addEventListener("input", updateSetting);
     textColorEl.addEventListener("input", updateSetting);
-    buttonColorEl.addEventListener("input", updateSetting);
+    uiColorEl.addEventListener("input", updateSetting);
     rowSpacingEl.addEventListener("input", updateSetting);
+
+    aboutVersionEl.textContent = "v" + APP_VERSION;
 
     var saved = localStorage.getItem(STORAGE_KEY);
     var savedSettings = localStorage.getItem(SETTINGS_KEY);
     if (savedSettings) {
         try {
             var parsedSettings = JSON.parse(savedSettings);
+            if (!parsedSettings.hasOwnProperty("uiColor") && parsedSettings.hasOwnProperty("buttonColor")) {
+                parsedSettings.uiColor = parsedSettings.buttonColor;
+            }
             for (var key in settings) {
                 if (parsedSettings.hasOwnProperty(key)) {
                     settings[key] = parsedSettings[key];

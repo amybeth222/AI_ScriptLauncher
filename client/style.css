@@ -7,7 +7,7 @@
 :root {
     --script-font-size: 11px;
     --script-text-color: #e0e0e0;
-    --button-color: #caff00;
+    --ui-color: #caff00;
     --row-spacing: 6px;
 }
 
@@ -72,7 +72,7 @@ header h1 {
 }
 
 #search:focus {
-    border-color: #caff00;
+    border-color: var(--ui-color);
 }
 
 #toolbar button {
@@ -87,8 +87,8 @@ header h1 {
 }
 
 #toolbar button:hover {
-    border-color: #caff00;
-    color: #caff00;
+    border-color: var(--ui-color);
+    color: var(--ui-color);
 }
 
 #settings-panel {
@@ -140,6 +140,163 @@ header h1 {
     padding: 2px 4px;
 }
 
+#folder-sources-section {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid #2c2c2c;
+}
+
+.settings-section-label {
+    color: #a8a8a8;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+#folder-source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.folder-source-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 3px;
+    padding: 4px 6px;
+}
+
+.folder-source-path {
+    min-width: 0;
+    flex: 1;
+    font-size: 10px;
+    color: #cccccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.folder-source-remove {
+    flex-shrink: 0;
+    background: transparent;
+    border: 0;
+    color: #888888;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.folder-source-remove:hover {
+    color: #ff5c5c;
+}
+
+#add-folder-btn {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    color: #cccccc;
+    padding: 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+#add-folder-btn:hover {
+    border-color: var(--ui-color);
+    color: var(--ui-color);
+}
+
+#about-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 100;
+}
+
+#about-backdrop[hidden] {
+    display: none;
+}
+
+#about-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    max-width: calc(100% - 32px);
+    padding: 18px 16px 16px;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    background: #202020;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    z-index: 101;
+}
+
+#about-panel[hidden] {
+    display: none;
+}
+
+#about-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: 0;
+    color: #888888;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#about-close-btn:hover {
+    color: #ffffff;
+}
+
+#about-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+
+#about-version {
+    font-size: 10px;
+    color: var(--ui-color);
+    margin-top: 2px;
+}
+
+#about-description {
+    font-size: 10px;
+    color: #a8a8a8;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+#about-author {
+    font-size: 10px;
+    color: #888888;
+    margin-top: 8px;
+}
+
+#about-author a {
+    color: var(--ui-color);
+    text-decoration: none;
+}
+
+#about-author a:hover {
+    text-decoration: underline;
+}
+
 #script-list {
     flex: 1;
     overflow-y: auto;
@@ -159,7 +316,7 @@ header h1 {
 }
 
 .script-item:hover {
-    border-color: #caff00;
+    border-color: var(--ui-color);
 }
 
 .draggable-item.is-dragging {
@@ -188,7 +345,7 @@ header h1 {
 }
 
 .drag-handle:hover {
-    color: var(--button-color);
+    color: var(--ui-color);
 }
 
 .script-info {
@@ -216,7 +373,7 @@ header h1 {
 }
 
 .script-item .run-btn {
-    background: var(--button-color);
+    background: var(--ui-color);
     color: #111111;
     border: none;
     font-weight: 700;
@@ -267,7 +424,7 @@ header h1 {
     content: "▾";
     display: inline-block;
     width: 14px;
-    color: var(--button-color);
+    color: var(--ui-color);
 }
 
 .folder-toggle[aria-expanded="false"]::before {

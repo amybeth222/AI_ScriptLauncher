@@ -16,10 +16,23 @@
 
         <div id="toolbar">
             <input id="search" type="text" placeholder="Filter scripts..." />
-            <button id="choose-folder-btn" title="Choose folder">📁</button>
+            <button id="about-btn" title="About" aria-expanded="false">ⓘ</button>
             <button id="settings-btn" title="Settings" aria-expanded="false">⚙</button>
             <button id="refresh-btn" title="Refresh">⟳</button>
         </div>
+
+        <div id="about-backdrop" hidden></div>
+        <section id="about-panel" aria-label="About Script Launcher" hidden>
+            <button id="about-close-btn" type="button" title="Close">×</button>
+            <div id="about-name">SCRIPT LAUNCHER</div>
+            <div id="about-version"></div>
+            <p id="about-description">
+                Scans a folder of .jsx/.jsxbin scripts and runs any of them with one click.
+            </p>
+            <div id="about-author">
+                Amy Beth &middot; <a id="about-link" href="https://scriptdepository.com">https://scriptdepository.com</a>
+            </div>
+        </section>
 
         <section id="settings-panel" aria-label="Display and folder settings" hidden>
             <label>
@@ -32,14 +45,19 @@
                 <input id="text-color" type="color" />
             </label>
             <label>
-                Button color
-                <input id="button-color" type="color" />
+                UI Color
+                <input id="ui-color" type="color" />
             </label>
             <label>
                 Row spacing
                 <input id="row-spacing" type="number" min="0" max="24" step="1" />
                 <span>px</span>
             </label>
+            <div id="folder-sources-section">
+                <div class="settings-section-label">Folder Sources</div>
+                <div id="folder-source-list"></div>
+                <button id="add-folder-btn" type="button">+ Add Folder</button>
+            </div>
         </section>
 
         <div id="script-list"></div>
