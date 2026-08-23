@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="9.0" ExtensionBundleId="com.amybeth.scriptlauncher" ExtensionBundleVersion="1.0.0"
+<ExtensionManifest Version="9.0" ExtensionBundleId="com.amybeth.scriptlauncher" ExtensionBundleVersion="1.1.0"
     xmlns:ExtensionBundleId="http://ns.adobe.com/Extensibility/Framework/1.0">
     <ExtensionList>
-        <Extension Id="com.amybeth.scriptlauncher.panel" Version="1.0.0" />
+        <Extension Id="com.amybeth.scriptlauncher.panel" Version="1.1.0" />
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
-            <Host Name="ILST" Version="[17.0,99.9]" />
+            <Host Name="ILST" Version="[17.0,30.9]" />
         </HostList>
         <LocaleList>
             <Locale Code="All" />
@@ -47,6 +47,11 @@
                         </MaxSize>
                     </Geometry>
                     <Icons>
+                        <Icon Type="Normal">./client/icons/panel-icon.png</Icon>
+                        <Icon Type="RollOver">./client/icons/panel-icon.png</Icon>
+                        <Icon Type="Disabled">./client/icons/panel-icon.png</Icon>
+                        <Icon Type="DarkNormal">./client/icons/panel-icon.png</Icon>
+                        <Icon Type="DarkRollOver">./client/icons/panel-icon.png</Icon>
                     </Icons>
                 </UI>
             </DispatchInfo>
