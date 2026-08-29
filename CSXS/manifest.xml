@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="9.0" ExtensionBundleId="com.amybeth.scriptlauncher" ExtensionBundleVersion="1.1.0"
+<ExtensionManifest Version="9.0" ExtensionBundleId="com.amybeth.scriptlauncher" ExtensionBundleVersion="1.2.0"
     xmlns:ExtensionBundleId="http://ns.adobe.com/Extensibility/Framework/1.0">
     <ExtensionList>
-        <Extension Id="com.amybeth.scriptlauncher.panel" Version="1.1.0" />
+        <Extension Id="com.amybeth.scriptlauncher.panel" Version="1.2.0" />
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
